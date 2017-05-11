@@ -22,25 +22,43 @@ Section: x
   }
   </style>
 </head>
-
+ 
 <body>
-  <div class="container">
-    <p>Image:</p>
-    <div id="myCanvas"></div>
+<div class="container">
+  <h2>vm list</h2>
+  <div class="row" id="vmList">
+  </div>
+</div>
+
+  <div class="container" id="vmListx">
   </div>
   <script>
-
   $(function() {
     var socket = io.connect();
-    console.log("Connect to socket");
-    socket.on("image", function(info) {
-      if (info.image) {
+    var vmnumber = 12;
+    console.log("Connect to socket, " + vmnumber + " computers");
 
+    function drawImages(socket, img) {
+     socket.on(img, function(info) {
+      if (info.image) {
         console.log("Read image from server");
-        document.getElementById("myCanvas").innerHTML = "<img src=\"data:image/jpg;base64, "+info.buffer+"\" alt=\"Red dot\" width=\"600\" height=\"400\"/>";
+        document.getElementById(img).innerHTML = "<p>" + img + ":</p><img src=\"data:image/jpg;base64, "+info.buffer+"\" alt=\"Red dot\" width=\"600\" height=\"400\"/ class=\"thumbnail img-responsive\">"
+          +"<div><button type=\"button\" class=\"btn btn-success\">Start</button>"
+          +"<button type=\"button\" class=\"btn btn-warning\">Reboot</button>"
+          +"<button type=\"button\" class=\"btn btn-danger\">PowerOff</button>"
+          +"<button type=\"button\" class=\"btn btn-danger\">Reinstall</button></div>";
         console.log(info.image);
       }
-    });
+     });
+    }
+    for (i = 1; i <= vmnumber; i++) {
+      var str = "" + i;
+      var pad = "000"
+      var img = "image" + pad.substring(0, pad.length - str.length) + str;
+      console.log("image name: " + img);
+      document.getElementById("vmList").innerHTML += '<div id="' + img + '" class="col-lg-4 col-sm-6 col-xs-12"></div>';
+      drawImages(socket, img);
+   }
   });
   </script>
 </body>

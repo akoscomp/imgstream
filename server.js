@@ -4,7 +4,7 @@ var http = require('http').createServer(app);
 var io = require('socket.io').listen(http);
 var users = [];
 var connections = [];
-var vmnumber = 12;
+var vmnumber = 8;
 
 var fs = require('fs'); //require for file serving
 

@@ -53,7 +53,7 @@ Section: x
     }
     for (i = 1; i <= vmnumber; i++) {
       var str = "" + i;
-      var pad = "000"
+      var pad = "000";
       var img = "image" + pad.substring(0, pad.length - str.length) + str;
       console.log("image name: " + img);
       document.getElementById("vmList").innerHTML += '<div id="' + img + '" class="col-lg-4 col-sm-6 col-xs-12"></div>';

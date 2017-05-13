@@ -28,42 +28,42 @@ io.sockets.on('connection', function(socket) {
     console.log('Disconnected %s sockets connected', connections.length);
   });
 
- function readMyFile(str) {
-  fs.readFile(__dirname + '/' + str + '.jpg', function(err, buf) {
-    //it's impossible to ebed binary data
-    console.log("Emit " + str)
-    socket.emit(str, { image: true, buffer: buf.toString('base64') });
-    console.log('image file is initialized: ' + __dirname + '/' + str + '.jpg');
-  });
- }
+  function readMyFile(str) {
+    fs.readFile(__dirname + '/' + str + '.jpg', function(err, buf) {
+      //it's impossible to ebed binary data
+      console.log("Emit " + str);
+      socket.emit(str, { image: true, buffer: buf.toString('base64') });
+      console.log('image file is initialized: ' + __dirname + '/' + str + '.jpg');
+    });
+  }
 
- for (i = 1; i <= vmnumber; i++) {
-   var str = "" + i;
-   var pad = "000"
-   var ans = "image" + pad.substring(0, pad.length - str.length) + str;
-//   str = 'image00' + i;
-   readMyFile(ans);
- }
+  for (i = 1; i <= vmnumber; i++) {
+    var str = "" + i;
+    var pad = "000";
+    var ans = "image" + pad.substring(0, pad.length - str.length) + str;
+    //   str = 'image00' + i;
+    readMyFile(ans);
+  }
 });
 
 function watchMyFile(str) {
-    var watch = require('node-watch');
-	watch(str + '.jpg', function(evt, filename) {
-	  if (evt === 'update') {
-		fs.readFile(__dirname + '/' + str + '.jpg', function(err, buf) {
-		  for (var i = 0; i < connections.length; i++) {
-			//it's impossible to ebed binary data
-			connections[i].emit(str, { image: true, buffer: buf.toString('base64') });
-			console.log('image file is initialized: ' + __dirname + '/' + str + '.jpg');
-		  }
-		});
-	  }
-	});
+  var watch = require('node-watch');
+  watch(str + '.jpg', function(evt, filename) {
+    if (evt === 'update') {
+      fs.readFile(__dirname + '/' + str + '.jpg', function(err, buf) {
+        for (var i = 0; i < connections.length; i++) {
+          //it's impossible to embed binary data
+          connections[i].emit(str, { image: true, buffer: buf.toString('base64') });
+          console.log('image file is initialized: ' + __dirname + '/' + str + '.jpg');
+        }
+      });
+    }
+  });
 }
- for (i = 1; i <= vmnumber; i++) {
-   var str = "" + i;
-   var pad = "000"
-   var ans = "image" + pad.substring(0, pad.length - str.length) + str;
-//   str = 'image00' + i;
-   watchMyFile(ans);
- }
+for (i = 1; i <= vmnumber; i++) {
+  var str = "" + i;
+  var pad = "000";
+  var ans = "image" + pad.substring(0, pad.length - str.length) + str;
+  //   str = 'image00' + i;
+  watchMyFile(ans);
+}

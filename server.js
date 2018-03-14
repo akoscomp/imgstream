@@ -29,7 +29,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   function readMyFile(str) {
-    fs.readFile(__dirname + '/' + str + '.jpg', function(err, buf) {
+    fs.readFile(__dirname + '/images/' + str + '.jpg', function(err, buf) {
       //it's impossible to ebed binary data
       console.log("Emit " + str);
       socket.emit(str, { image: true, buffer: buf.toString('base64') });
@@ -48,13 +48,13 @@ io.sockets.on('connection', function(socket) {
 
 function watchMyFile(str) {
   var watch = require('node-watch');
-  watch(str + '.jpg', function(evt, filename) {
+  watch('./images/' + str + '.jpg', function(evt, filename) {
     if (evt === 'update') {
-      fs.readFile(__dirname + '/' + str + '.jpg', function(err, buf) {
+      fs.readFile(__dirname + '/images/' + str + '.jpg', function(err, buf) {
         for (var i = 0; i < connections.length; i++) {
           //it's impossible to embed binary data
           connections[i].emit(str, { image: true, buffer: buf.toString('base64') });
-          console.log('image file is initialized: ' + __dirname + '/' + str + '.jpg');
+          console.log('image file is initialized: ' + __dirname + '/images/' + str + '.jpg');
         }
       });
     }

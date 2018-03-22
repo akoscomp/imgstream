@@ -1,20 +1,20 @@
-<!DOCTYPE html
-PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- 
-This is a skeleton html file that you can use to get you started on each new 
-HTML project
-
-Name: Your Name Here
-Class: CIS 3303
-Section: x
--->
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
   <title>imgstream</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+  <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+ <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
   <script src="/socket.io/socket.io.js"></script>
   <style>
   body {
@@ -24,7 +24,7 @@ Section: x
 </head>
  
 <body>
-<div class="container">
+<div class="container-fluid">
   <h2>vm list</h2>
   <div class="row" id="vmList">
   </div>
@@ -35,31 +35,35 @@ Section: x
   <script>
   $(function() {
     var socket = io.connect();
-    var vmnumber = 12;
-    console.log("Connect to socket, " + vmnumber + " computers");
+    console.log("Connect to socket...");
+
+    var socket = io.connect('/');
+    socket.on('imgList', function(data) {
+	var fileList=data.message;
+	console.log('Image files:', fileList);
+	    fileList.forEach(filePrint);
+    });
 
     function drawImages(socket, img) {
      socket.on(img, function(info) {
       if (info.image) {
         console.log("Read image from server");
-        document.getElementById(img).innerHTML = "<p>" + img + ":</p><img src=\"data:image/jpg;base64, "+info.buffer+"\" alt=\"Red dot\" width=\"600\" height=\"400\"/ class=\"thumbnail img-responsive\">"
-          +"<div><button type=\"button\" class=\"btn btn-success\">Start</button>"
-          +"<button type=\"button\" class=\"btn btn-warning\">Reboot</button>"
-          +"<button type=\"button\" class=\"btn btn-danger\">PowerOff</button>"
-          +"<button type=\"button\" class=\"btn btn-danger\">Reinstall</button></div>";
+        document.getElementById(img).innerHTML = "<span class=\"badge badge-info \">" + img.slice(0, -4) + "</span><img src=\"data:image/jpg;base64, "+info.buffer+"\" alt=\"Red dot\" width=\"120\" height=\"80\"/ class=\"thumbnail img-responsive\">";
+//          +"<div><button type=\"button\" class=\"btn btn-success btn-sm\">Start</button>"
+//          +"<button type=\"button\" class=\"btn btn-warning btn-sm\">Reboot</button>"
+//          +"<button type=\"button\" class=\"btn btn-danger btn-sm\">PowerOff</button>"
+	
+  //        +"<span class=\"badge badge-danger \">Reinstall</button></div>";
         console.log(info.image);
       }
      });
     }
-    for (i = 1; i <= vmnumber; i++) {
-      var str = "" + i;
-      var pad = "000";
-      var img = "image" + pad.substring(0, pad.length - str.length) + str;
-      console.log("image name: " + img);
-      document.getElementById("vmList").innerHTML += '<div id="' + img + '" class="col-lg-4 col-sm-6 col-xs-12"></div>';
-      drawImages(socket, img);
-   }
-  });
+  function filePrint(item, index) {
+    console.log("items: " + item + ", index: " + index);
+    document.getElementById("vmList").innerHTML += '<div id="' + item + '" class="col-lg-1 col-sm-2 col-xs-3"></div>';
+    drawImages(socket, item);
+  }
+});
   </script>
 </body>
 
